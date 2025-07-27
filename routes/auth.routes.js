@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+// endpoints prefix: /api/v1/auth
 const authRouter = Router();
 
 authRouter.post("/sign-up", (req, res) => {
