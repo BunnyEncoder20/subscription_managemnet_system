@@ -18,7 +18,9 @@ app.use("/api/v1/subs", subscriptionRouter);
 
 // Server Listening
 app.listen(PORT, () => {
-    console.log(`Subscription Tracker API is running: http:localhost:${PORT}`);
+    console.log(
+        `Subscription Tracker API is running: http://localhost:${PORT}`,
+    );
 });
 
 export default app;
