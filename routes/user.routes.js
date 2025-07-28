@@ -5,12 +5,8 @@ import { authorize } from "../middlewares/auth.middleware.js";
 // endpoint's prefix: api/v1/users
 const userRouter = Router();
 
-userRouter.get("/", getAllUsers);
+userRouter.get("/", authorize, getAllUsers);
 userRouter.get("/:id", authorize, getUserById); // need authorization route
-
-userRouter.post(" /", (req, res) => {
-    res.send({ message: "CREATE new user" });
-});
 
 userRouter.put("/:id", (req, res) => {
     res.send({ message: "UPDATE specific user " });
