@@ -28,7 +28,7 @@ app.use("/api/v1/subs", subscriptionRouter);
 // Server Listening
 app.listen(PORT, async () => {
     console.log(
-        `Subscription Tracker API is running: http://localhost:${PORT}`,
+        `[server] Subscription Management API is running: http://localhost:${PORT}`,
     );
     await connect2database();
 });
