@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { getAllUsers, getUserById } from "../controllers/user.controller.js";
-import { authorize } from "../middlewares/auth.middleware.js";
+import authorizationMiddleware from "../middlewares/auth.middleware.js";
 
 // endpoint's prefix: api/v1/users
 const userRouter = Router();
 
-userRouter.get("/", authorize, getAllUsers);
-userRouter.get("/:id", authorize, getUserById); // need authorization route
+userRouter.get("/", authorizationMiddleware, getAllUsers);
+userRouter.get("/:id", authorizationMiddleware, getUserById); // need authorization route
 
 userRouter.put("/:id", (req, res) => {
     res.send({ message: "UPDATE specific user " });
