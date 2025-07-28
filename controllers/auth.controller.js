@@ -28,7 +28,7 @@ export const signUp = async (req, res, next) => {
 
         // create a new user | Attached with a session so that it can be aborted if any error occurs
         const newUsers = await UserModel.create(
-            [{ name, email, hashedPassword }],
+            [{ name, email, password: hashedPassword }],
             { session },
         );
 
