@@ -1,15 +1,12 @@
 import { Router } from "express";
+import { getAllUsers, getUserById } from "../controllers/user.controller.js";
+import { authorize } from "../middlewares/auth.middleware.js";
 
 // endpoint's prefix: api/v1/users
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
-    res.send({ message: "GET all users" });
-});
-
-userRouter.get("/:id", (req, res) => {
-    res.send({ message: "GET specific users" });
-});
+userRouter.get("/", getAllUsers);
+userRouter.get("/:id", authorize, getUserById); // need authorization route
 
 userRouter.post(" /", (req, res) => {
     res.send({ message: "CREATE new user" });
