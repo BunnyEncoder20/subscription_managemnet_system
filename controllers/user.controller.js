@@ -16,7 +16,7 @@ export const getAllUsers = async (req, res, next) => {
 };
 
 export const getUserById = async (req, res, next) => {
-    console.log(`[sever] fetching user:${req.param.id}`);
+    console.log(`[sever] fetching user:${req.params.id}`);
     try {
         // fetch the user by id (get all feilds - password cause we don't want to return that)
         const user = await UserModel.findById(req.params.id).select(
