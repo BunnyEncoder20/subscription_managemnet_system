@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 
 import { JWT_SECRET } from "../config/env.js";
-import { UserModel } from "../models/users.model.js";
+import UserModel from "../models/users.model.js";
 
-const authorize = async (req, res, next) => {
+export const authorize = async (req, res, next) => {
     console.log("[server] req to autherized route...");
     try {
         let token;
