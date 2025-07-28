@@ -4,7 +4,7 @@ import { PORT } from "./config/env.js";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import subscriptionRouter from "./routes/subscription.routes.js";
-import connect2database from "./database/mongodb.js";
+import connect2database from "./database/connection.js";
 
 const app = express();
 
