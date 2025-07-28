@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env.js";
 import UserModel from "../models/users.model.js";
 
-export const authorize = async (req, res, next) => {
-    console.log("[server] req to autherized route...");
+const authorizationMiddleware = async (req, res, next) => {
+    console.log("[server] going through autherization check...");
     try {
         let token;
 
@@ -45,3 +45,5 @@ export const authorize = async (req, res, next) => {
         });
     }
 };
+
+export default authorizationMiddleware;
