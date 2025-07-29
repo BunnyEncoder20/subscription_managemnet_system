@@ -4,7 +4,11 @@ const arcjetMiddleware = async (req, res, next) => {
     console.log("[server] going through arcjet check");
     try {
         console.log("[server] arcjet making decision...");
-        const decision = await aj.protect(req, { requested: 1 }); // requested tells how many tokens to take away for each req
+        const decision = await aj.protect(req, { requested: 5 }); // requested tells how many tokens to take away for each req
+        console.debug(
+            "[server] arcjet decision conclusion: ",
+            decision.conclusion,
+        );
 
         if (decision.isDenied()) {
             if (decision.reason.isRateLimit()) {
