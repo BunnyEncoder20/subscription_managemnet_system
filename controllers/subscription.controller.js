@@ -37,6 +37,34 @@ export const createSubscription = async (req, res, next) => {
     }
 };
 
+export const getSpecificSubscription = async (req, res, next) => {
+    console.log(
+        `[server] req for subscription:${req.params.id} from user:${req.user._id}`,
+    );
+    try {
+        const subscription = await SubscriptionModel.findById(req.params.id);
+
+        if (!subscription) {
+            console.log(
+                `[server] subscription:${req.params.id} could not be found`,
+            );
+            const error = new Error(`subscription:${req.params.id} not found`);
+            error.status = 404;
+            next(error);
+        }
+
+        console.log(
+            `[server] fetched subsciption:${subscription._id} successfully`,
+        );
+        res.status(200).json({
+            success: true,
+            data: subscription,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getUserSubscriptions = async (req, res, next) => {
     console.log(
         "[server] req for list of subscriptions of user:",
