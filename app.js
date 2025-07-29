@@ -11,21 +11,24 @@ import arcjetMiddleware from "./middlewares/arcjet.middleware.js";
 
 const app = express();
 
+// 🔒 Arcjet first (before body parsing, routing)
+app.use(arcjetMiddleware);
+
+// 🔧 Parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// 🚀 Routes
 app.get("/", (req, res) => {
     res.send("Hello World. This is Subscription Management");
 });
-
-// Middleware
-app.use(express.json()); // allows api to handle json data sent
-app.use(express.urlencoded({ extended: false })); // allows api to handle url encoded data (from html forms) sent
-app.use(cookieParser()); // reads cookies from incoming requests so app can store user data
-app.use(errorMiddleware); // global erorr handler
-app.use(arcjetMiddleware); // rate limiting, bot detection, etc
-
-// routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/subs", subscriptionRouter);
+
+// ❗ Global error handler last
+app.use(errorMiddleware);
 
 // Server Listening
 app.listen(PORT, async () => {
