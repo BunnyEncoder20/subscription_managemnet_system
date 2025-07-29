@@ -19,3 +19,33 @@ export const createSubscription = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getUserSubscriptions = async (req, res, next) => {
+    console.log(
+        "[server] req for list of subscriptions of user:",
+        req.params.id,
+    );
+
+    try {
+        if (req.user.id !== req.params.id) {
+            console.error(
+                `[server] user:${req.user._id} tried to access another user's subscriptions`,
+            );
+            const error = new Error(
+                "You are not the owner of this account. You can ONLY get YOUR list of subscriptions.",
+            );
+            error.status = 401;
+            throw error;
+        }
+
+        const subscriptions = await SubscriptionModel.find({
+            user: req.params.id,
+        });
+        res.status(200).json({
+            success: true,
+            data: subscriptions,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
