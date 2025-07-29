@@ -3,42 +3,42 @@ import { Router } from "express";
 import authorizationMiddleware from "../middlewares/auth.middleware.js";
 import {
     createSubscription,
+    getAllSubscriptions,
+    getSpecificSubscription,
     getUserSubscriptions,
 } from "../controllers/subscription.controller.js";
 
 // endpoint's prefix: api/v1/subs
 const subscriptionRouter = Router();
 
-subscriptionRouter.get("/", (req, res) => {
-    res.send({ message: "GET all subscriptions" });
-});
-
-subscriptionRouter.get("/:id", (req, res) => {
-    res.send({ message: "GET specific subscriptions" });
-});
-
+// Static routes first
+subscriptionRouter.get("/", authorizationMiddleware, getAllSubscriptions);
 subscriptionRouter.post("/", authorizationMiddleware, createSubscription);
+subscriptionRouter.get("/upcoming-renewals", (req, res) => {
+    res.send({ message: "GET all upcoming (due) renewals " });
+});
 
+// dynamic routes after
+subscriptionRouter.get(
+    "/:id",
+    authorizationMiddleware,
+    getSpecificSubscription,
+);
 subscriptionRouter.put("/:id", (req, res) => {
     res.send({ message: "Update specific subscription" });
 });
-
 subscriptionRouter.delete("/:id", (req, res) => {
     res.send({ message: "DELETE specific subscription" });
 });
 
+// More dynamic routes
 subscriptionRouter.get(
     "/user/:id",
     authorizationMiddleware,
     getUserSubscriptions,
 );
-
-subscriptionRouter.get("/:id/cancel", (req, res) => {
+subscriptionRouter.get("/cancel/:id", (req, res) => {
     res.send({ message: "CANCEL a specified subscription" });
-});
-
-subscriptionRouter.get("/upcoming-renewals", (req, res) => {
-    res.send({ message: "GET all upcoming (due) renewals " });
 });
 
 export default subscriptionRouter;
