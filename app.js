@@ -14,7 +14,7 @@ const app = express();
 // 🔒 Arcjet first (before body parsing, routing)
 app.use(arcjetMiddleware);
 
-// 🔧 Parsers
+// ⚙️ Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -30,7 +30,7 @@ app.use("/api/v1/subs", subscriptionRouter);
 // ❗ Global error handler last
 app.use(errorMiddleware);
 
-// Server Listening
+// 🌐 Server Listening
 app.listen(PORT, async () => {
     console.log(
         `[server] Subscription Management API is running: http://localhost:${PORT}`,
