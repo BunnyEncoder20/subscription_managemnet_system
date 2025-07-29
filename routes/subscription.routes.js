@@ -14,6 +14,8 @@ const subscriptionRouter = Router();
 // Static routes first
 subscriptionRouter.get("/", authorizationMiddleware, getAllSubscriptions);
 subscriptionRouter.post("/", authorizationMiddleware, createSubscription);
+
+// TODO: Complete this route's controller
 subscriptionRouter.get("/upcoming-renewals", (req, res) => {
     res.send({ message: "GET all upcoming (due) renewals " });
 });
@@ -24,9 +26,13 @@ subscriptionRouter.get(
     authorizationMiddleware,
     getSpecificSubscription,
 );
+
+// TODO: Complete this route's controller
 subscriptionRouter.put("/:id", (req, res) => {
     res.send({ message: "Update specific subscription" });
 });
+
+// TODO: Complete this route's controller
 subscriptionRouter.delete("/:id", (req, res) => {
     res.send({ message: "DELETE specific subscription" });
 });
@@ -37,6 +43,7 @@ subscriptionRouter.get(
     authorizationMiddleware,
     getUserSubscriptions,
 );
+// TODO: Complete this route's controller
 subscriptionRouter.get("/cancel/:id", (req, res) => {
     res.send({ message: "CANCEL a specified subscription" });
 });
