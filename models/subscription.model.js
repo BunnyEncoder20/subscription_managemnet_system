@@ -28,23 +28,23 @@ const subscriptionSchema = new mongoose.Schema(
         },
         frequency: {
             type: String,
-            enum: ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"],
-            default: "MONTHLY",
+            enum: ["daily", "weekly", "monthly", "yearly"],
+            default: "monthly",
         },
         category: {
             type: String,
             enum: [
-                "ENTERTAINMENT",
-                "EDUCATION",
-                "HEALTH",
-                "SPORTS",
-                "NEWS",
-                "FINANCE",
-                "TECHNOLOGY",
-                "LIFESTYLE",
-                "OTHER",
+                "entertainment",
+                "education",
+                "health",
+                "sports",
+                "news",
+                "finance",
+                "technology",
+                "lifestyle",
+                "other",
             ],
-            default: "ENTERTAINMENT",
+            default: "entertainment",
             required: [true, "Subscription category is required"],
         },
         paymentMethod: {
@@ -54,29 +54,33 @@ const subscriptionSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["ACTIVE", "EXPIRED", "CANCELLED"],
-            default: "ACTIVE",
+            enum: ["active", "expired", "cancelled"],
+            default: "active",
         },
         startDate: {
             type: Date,
-            required: true,
+            required: [true, "Start date is required"],
             validate: {
-                validatorFunc: (value) => value <= new Date(),
+                validator: function (value) {
+                    return value <= new Date();
+                },
                 message: "Start date cannot be in the future",
             },
         },
         renewalDate: {
             type: Date,
             validate: {
-                validatorFunc: function (value) {
-                    value > this.startDate;
+                validator: function (value) {
+                    // prevent crashing on undefined startDate or value
+                    if (!value || !this.startDate) return true;
+                    return value >= this.startDate;
                 },
                 message: "Renewal date cannot be before start date",
             },
         },
         user: {
-            type: mongoose.Schema.Types.ObjectId, // reference to User model
-            ref: "User", // remember this is the Name passed onto MongoDB (not the js variable name)
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
             required: true,
             index: true,
         },
@@ -84,15 +88,14 @@ const subscriptionSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-// automatically, run this function (before saving a new record) renewal date
+// Middleware: auto-calculate renewalDate and update status
 subscriptionSchema.pre("save", function (next) {
-    // calculate the renewal date if not provided already
-    if (!this.renewalDate) {
+    if (!this.renewalDate && this.startDate && this.frequency) {
         const renewalPeriods = {
-            DAILY: 1,
-            WEEKLY: 7,
-            MONTHLY: 30,
-            YEARLY: 365,
+            daily: 1,
+            weekly: 7,
+            monthly: 30,
+            yearly: 365,
         };
         this.renewalDate = new Date(this.startDate);
         this.renewalDate.setDate(
@@ -100,15 +103,12 @@ subscriptionSchema.pre("save", function (next) {
         );
     }
 
-    // auto-update the status if the renewal date as passed already
-    if (this.renewalDate < new Date()) {
-        this.status = "EXPIRED";
+    if (this.renewalDate && this.renewalDate < new Date()) {
+        this.status = "expired";
     }
 
-    // proceed with creation of document
     next();
 });
 
-// Making the model out of schema and exporting it
-const SubscriptionModel = mongoose.Model("Subscription", subscriptionSchema);
+const SubscriptionModel = mongoose.model("Subscription", subscriptionSchema);
 export default SubscriptionModel;
