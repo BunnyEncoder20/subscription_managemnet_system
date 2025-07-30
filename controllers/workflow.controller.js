@@ -3,7 +3,7 @@ const require = createRequire(import.meta.url); // but cause we specific "module
 const { serve } = require("@upstash/workflow/express"); // just for this "require"
 import dayjs from "dayjs";
 
-import SubscriptionModel from "../models/subscription.model";
+import SubscriptionModel from "../models/subscription.model.js";
 
 const REMINDERS = [7, 5, 2, 1];
 
@@ -33,7 +33,7 @@ export const sendReminders = serve(async (context) => {
     }
 
     console.log(
-        `[upstash] subscription:${subscriptionId} has valid renewwal date. Making workflows reminders...`,
+        `[upstash] subscription:${subscriptionId} has valid renewal date. Making workflows reminders...`,
     );
     for (const daysBefore of REMINDERS) {
         // using dayjs obj, can substract(days, unit) dayBefore from renewal date
@@ -47,7 +47,7 @@ export const sendReminders = serve(async (context) => {
             );
             await sleepUntilReminder(
                 context,
-                `Reminder ${daysBefore} days before`,
+                `Reminder for ${daysBefore} days before`,
                 reminderDate,
             );
 
@@ -68,7 +68,7 @@ export const sendReminders = serve(async (context) => {
 });
 
 const fetchSubscription = async (context, subscriptionId) => {
-    return await context.run("get subscription", () => {
+    return await context.run("get subscription", async () => {
         return SubscriptionModel.findById(subscriptionId).populate(
             "user", // get user data
             "name email", // specifically name and email
