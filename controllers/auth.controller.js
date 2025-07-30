@@ -47,7 +47,7 @@ export const signUp = async (req, res, next) => {
         await session.commitTransaction();
         session.endSession();
 
-        console.log("[server] user ${name} was created successfully");
+        console.log(`[server] user ${name} was created successfully`);
         res.status(201).json({
             success: true,
             message: "User created successfully",
