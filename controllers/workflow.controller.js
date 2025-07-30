@@ -4,6 +4,7 @@ const { serve } = require("@upstash/workflow/express"); // just for this "requir
 import dayjs from "dayjs";
 
 import SubscriptionModel from "../models/subscription.model.js";
+import { sendReminderEmail } from "../utils/send-email.js";
 
 const REMINDERS = [7, 5, 2, 1];
 
@@ -14,6 +15,7 @@ export const sendReminders = serve(async (context) => {
     );
 
     const subscription = await fetchSubscription(context, subscriptionId);
+    // console.debug(subscription);
 
     if (!subscription || subscription.status !== "active") {
         console.debug(
@@ -39,8 +41,8 @@ export const sendReminders = serve(async (context) => {
         // using dayjs obj, can substract(days, unit) dayBefore from renewal date
         const reminderDate = renewalDate.subtract(daysBefore, "day");
 
-        // schedule reminder if reminder date is after current datetime
-        if (reminderDate.isAfter(dayjs())) {
+        // schedule reminder if reminder date is today or after today
+        if (!reminderDate.isBefore(dayjs(), "day")) {
             // schedule reminder
             console.log(
                 `[upstash] setting reminder for ${daysBefore} days before for subscriptionId:${subscriptionId}.`,
@@ -51,14 +53,15 @@ export const sendReminders = serve(async (context) => {
                 reminderDate,
             );
 
-            // Trigger Reminder
-            console.log(
-                `[upstash] triggering reminder for ${daysBefore} days before for subscriptionId:${subscriptionId}.`,
-            );
-            await triggerReminder(
-                context,
-                `Reminder for ${daysBefore} days before`,
-            );
+            // trigger the reminder only if the reminderDate is today
+            if (dayjs().isSame(reminderDate, "day")) {
+                // Trigger Reminder
+                await triggerReminder(
+                    context,
+                    `${daysBefore} days before reminder`, // label mush match the ones in emailTemplates
+                    subscription,
+                );
+            }
         }
     }
 
@@ -81,9 +84,15 @@ const sleepUntilReminder = async (context, label, date) => {
     await context.sleepUntil(label, date.toDate());
 };
 
-const triggerReminder = async (context, label) => {
-    return await context.run(label, () => {
-        console.log(`[upstash] triggering ${label} reminder`);
-        // TODO: send email, sms, pushnotification...
+const triggerReminder = async (context, label, subscription) => {
+    return await context.run(label, async () => {
+        console.log(
+            `[upstash] emailing ${label} reminder for subscriptionId:${subscription._id}.`,
+        );
+        await sendReminderEmail({
+            to: subscription.user.email,
+            type: label,
+            subscription,
+        });
     });
 };
