@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import dayjs from "dayjs";
 
 const subscriptionSchema = new mongoose.Schema(
     {
@@ -90,20 +91,20 @@ const subscriptionSchema = new mongoose.Schema(
 
 // Middleware: auto-calculate renewalDate and update status
 subscriptionSchema.pre("save", function (next) {
-    if (!this.renewalDate && this.startDate && this.frequency) {
-        const renewalPeriods = {
+    if (!this.renewalDate && this.startDate) {
+        const daysToAdd = {
             daily: 1,
             weekly: 7,
             monthly: 30,
             yearly: 365,
         };
-        this.renewalDate = new Date(this.startDate);
-        this.renewalDate.setDate(
-            this.renewalDate.getDate() + renewalPeriods[this.frequency],
-        );
+
+        const addedDays = daysToAdd[this.frequency] || 30; // fallback to 30 days if unknown
+
+        this.renewalDate = dayjs(this.startDate).add(addedDays, "day").toDate(); // convert back to JS Date object
     }
 
-    if (this.renewalDate && this.renewalDate < new Date()) {
+    if (this.renewalDate && dayjs(this.renewalDate).isBefore(dayjs())) {
         this.status = "expired";
     }
 
