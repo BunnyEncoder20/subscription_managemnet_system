@@ -35,8 +35,12 @@
 4. Securing API with Arcjet
 5. Automating Subscription tracking with Upstash Workflows
 
-## Important Commands 
-- To generate a express (for only backend)
+## Important Commands
+- To generate a express project (for only backend)
 ```bash
 npx express-generator --no-view --git ./
+```
+- To start upstash serverless workflow (for local dev)
+```bash
+npx @upstash/qstash-cli dev
 ```
