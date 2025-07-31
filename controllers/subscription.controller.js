@@ -7,7 +7,6 @@ export const getAllSubscriptions = async (req, res, next) => {
         `[server] req for list of all subscriptions data by user:${req.user._id}`,
     );
     try {
-        // TODO: Add admin check for these data routes
         const subscriptions = await SubscriptionModel.find();
         console.log(`[server] fetched ${subscriptions.length} subscriptions`);
         res.status(200).json({

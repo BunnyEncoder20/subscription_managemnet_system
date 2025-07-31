@@ -1,6 +1,8 @@
 import { Router } from "express";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
+import authMiddleware, {
+    verifyAdmin,
+} from "../middlewares/auth.middleware.js";
 import {
     createSubscription,
     getAllSubscriptions,
@@ -12,7 +14,7 @@ import {
 const subscriptionRouter = Router();
 
 // Static routes first
-subscriptionRouter.get("/", authMiddleware, getAllSubscriptions);
+subscriptionRouter.get("/", verifyAdmin, getAllSubscriptions);
 subscriptionRouter.post("/", authMiddleware, createSubscription);
 
 // TODO: Complete this route's controller
@@ -21,7 +23,7 @@ subscriptionRouter.get("/upcoming-renewals", (req, res) => {
 });
 
 // dynamic routes after
-subscriptionRouter.get("/:id", authMiddleware, getSpecificSubscription);
+subscriptionRouter.get("/:id", verifyAdmin, getSpecificSubscription);
 
 // TODO: Complete this route's controller
 subscriptionRouter.put("/:id", (req, res) => {
