@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, "is required field"],
             minLength: 8,
+            select: false, // don't send the password back when querying for documents
         },
     },
     {
