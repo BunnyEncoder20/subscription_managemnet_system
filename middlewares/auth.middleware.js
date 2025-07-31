@@ -51,3 +51,22 @@ const authMiddleware = async (req, res, next) => {
 };
 
 export default authMiddleware;
+
+export const verifyAdmin = (req, res, next) => {
+    authMiddleware(req, res, () => {
+        if (!req.user.isAdmin) {
+            console.error(
+                `[server] user:${req.user._id} is not an admin. Rejecting request.`,
+            );
+            const error = new Error(
+                "You are not authorized to perform this action",
+            );
+            error.statusCode = 403;
+            return next(error);
+        }
+        console.log(
+            `[server] user:${req.user._id} is an admin. Allowing request.`,
+        );
+        next();
+    });
+};
