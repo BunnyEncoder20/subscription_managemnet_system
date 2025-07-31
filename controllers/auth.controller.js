@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import UserModel from "../models/users.model.js ";
-import { JWT_EXPIRY_IN, JWT_SECRET } from "../config/env.js";
+import { NODE_ENV, JWT_EXPIRY_IN, JWT_SECRET } from "../config/env.js";
 
 export const signUp = async (req, res, next) => {
     console.log(
@@ -37,25 +37,33 @@ export const signUp = async (req, res, next) => {
             [{ name, email, password: hashedPassword }],
             { session },
         );
+        const newUser = newUsers[0];
 
         console.log("[server] creating new jwt token...");
-        const token = jwt.sign({ userId: newUsers[0]._id }, JWT_SECRET, {
+        const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, {
             expiresIn: JWT_EXPIRY_IN,
         });
+
+        // remove password from user object
+        newUser.password = undefined;
 
         console.log("[server] commiting session changes...");
         await session.commitTransaction();
         session.endSession();
 
         console.log(`[server] user ${name} was created successfully`);
-        res.status(201).json({
-            success: true,
-            message: "User created successfully",
-            data: {
-                token,
-                user: newUsers[0],
-            },
-        });
+        res.status(201)
+            .cookie("access_token", token, {
+                httpOnly: true,
+                secure: NODE_ENV === "production", // will allow to send cookie over http in development | in production, only sent cookies over https
+            })
+            .json({
+                success: true,
+                message: "User created successfully",
+                data: {
+                    user: newUser,
+                },
+            });
     } catch (error) {
         console.debug("[server] an error occured why creating new user.");
         console.debug("[server] session is aborting transaction...");
@@ -71,7 +79,7 @@ export const signIn = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        const user = await UserModel.findOne({ email });
+        const user = await UserModel.findOne({ email }).select("+password"); // just for sign in we call the user obj with password to verify credentials. After that we remove it.
         if (!user) {
             const error = new Error("user not found");
             error.statusCode = 404;
@@ -91,20 +99,37 @@ export const signIn = async (req, res, next) => {
             expiresIn: JWT_EXPIRY_IN,
         });
 
-        console.log(`[server] user:${email} signed in successfully`);
-        res.status(200).json({
-            seccess: true,
-            message: "user signed in successfully",
-            data: {
-                token,
-                user,
-            },
-        });
+        // remove password from user object
+        user.password = undefined;
+
+        console.log(`[server] user:${user._id} signed in successfully`);
+        res.status(200)
+            .cookie("access_token", token, {
+                httpOnly: true,
+                secure: NODE_ENV === "production",
+            })
+            .json({
+                success: true,
+                message: "user signed in successfully",
+                data: {
+                    user,
+                },
+            });
     } catch (error) {
         next(error);
     }
 };
 
 export const signOut = async (req, res, next) => {
-    // TODO: Implement user signOut controller
+    try {
+        console.log(`[server] user:${req.user._id} signing out.`);
+        res.status(200)
+            .clearCookie("access_token") // clears the cookie which has the auth jwt to sign out
+            .json({
+                success: true,
+                message: "User signed out successfully",
+            });
+    } catch (error) {
+        next(error);
+    }
 };

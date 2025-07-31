@@ -3,17 +3,21 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env.js";
 import UserModel from "../models/users.model.js";
 
-const authorizationMiddleware = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
     console.log("[server] going through autherization check...");
     try {
-        let token;
+        // If you getting the jwt token from the request header
+        // let token;
 
-        if (
-            req.headers.authorization &&
-            req.headers.authorization.startsWith("Bearer")
-        ) {
-            token = req.headers.authorization.split(" ")[1];
-        }
+        // if (
+        //     req.headers.authorization &&
+        //     req.headers.authorization.startsWith("Bearer")
+        // ) {
+        //     token = req.headers.authorization.split(" ")[1];
+        // }
+
+        // Using cookies for tokens (preferred in production)
+        const token = req.cookies.access_token;
 
         if (!token) {
             console.debug("[server] no token was provided. Rejecting request.");
@@ -46,4 +50,4 @@ const authorizationMiddleware = async (req, res, next) => {
     }
 };
 
-export default authorizationMiddleware;
+export default authMiddleware;
