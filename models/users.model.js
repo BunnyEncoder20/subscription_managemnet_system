@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema(
             minLength: 8,
             select: false, // don't send the password back when querying for documents
         },
+        isAdmin: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
