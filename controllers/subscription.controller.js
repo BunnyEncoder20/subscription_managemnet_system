@@ -108,3 +108,25 @@ export const getUserSubscriptions = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getUpcomingRenewals = async (req, res, next) => {
+    console.log(
+        `[server] req to fetch upcoming subs renewals for user:${req.user._id}`,
+    );
+
+    try {
+        const upcomingRenewals = await SubscriptionModel.find({
+            user: req.user._id,
+            status: "active",
+            nextRenewalDate: { $gte: Date.now() },
+        });
+
+        console.log("[server] fetched upcoming renewals successfully");
+        res.status(200).json({
+            success: true,
+            data: upcomingRenewals,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

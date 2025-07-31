@@ -1,13 +1,12 @@
 import { Router } from "express";
 
-import authMiddleware, {
-    verifyAdmin,
-} from "../middlewares/auth.middleware.js";
+import authMiddleware, { verifyAdmin } from "../middlewares/auth.middleware.js";
 import {
     createSubscription,
     getAllSubscriptions,
     getSpecificSubscription,
     getUserSubscriptions,
+    getUpcomingRenewals,
 } from "../controllers/subscription.controller.js";
 
 // endpoint's prefix: api/v1/subs
@@ -18,9 +17,11 @@ subscriptionRouter.get("/", verifyAdmin, getAllSubscriptions);
 subscriptionRouter.post("/", authMiddleware, createSubscription);
 
 // TODO: Complete this route's controller
-subscriptionRouter.get("/upcoming-renewals", (req, res) => {
-    res.send({ message: "GET all upcoming (due) renewals " });
-});
+subscriptionRouter.get(
+    "/upcoming-renewals",
+    authMiddleware,
+    getUpcomingRenewals,
+);
 
 // dynamic routes after
 subscriptionRouter.get("/:id", verifyAdmin, getSpecificSubscription);
