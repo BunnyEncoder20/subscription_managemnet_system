@@ -16,7 +16,6 @@ const subscriptionRouter = Router();
 subscriptionRouter.get("/", verifyAdmin, getAllSubscriptions);
 subscriptionRouter.post("/", authMiddleware, createSubscription);
 
-// TODO: Complete this route's controller
 subscriptionRouter.get(
     "/upcoming-renewals",
     authMiddleware,
