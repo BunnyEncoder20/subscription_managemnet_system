@@ -4,8 +4,10 @@ import authMiddleware, { verifyAdmin } from "../middlewares/auth.middleware.js";
 import {
     createSubscription,
     getAllSubscriptions,
-    getSpecificSubscription,
-    getUserSubscriptions,
+    getSubscriptionById,
+    updateSubscriptionById,
+    getUserSubscriptionsById,
+    deleteSubscriptionById,
     getUpcomingRenewals,
 } from "../controllers/subscription.controller.js";
 
@@ -23,23 +25,15 @@ subscriptionRouter.get(
 );
 
 // dynamic routes after
-subscriptionRouter.get("/:id", verifyAdmin, getSpecificSubscription);
+subscriptionRouter.get("/:id", verifyAdmin, getSubscriptionById);
 
 // TODO: Complete this route's controller
-subscriptionRouter.put("/:id", (req, res) => {
-    res.send({ message: "Update specific subscription" });
-});
+subscriptionRouter.put("/:id", authMiddleware, updateSubscriptionById);
 
 // TODO: Complete this route's controller
-subscriptionRouter.delete("/:id", (req, res) => {
-    res.send({ message: "DELETE specific subscription" });
-});
+subscriptionRouter.delete("/:id", authMiddleware, deleteSubscriptionById);
 
 // More dynamic routes
-subscriptionRouter.get("/user/:id", authMiddleware, getUserSubscriptions);
-// TODO: Complete this route's controller
-subscriptionRouter.get("/cancel/:id", (req, res) => {
-    res.send({ message: "CANCEL a specified subscription" });
-});
+subscriptionRouter.get("/user/:id", authMiddleware, getUserSubscriptionsById);
 
 export default subscriptionRouter;

@@ -79,7 +79,7 @@ export const getSpecificSubscription = async (req, res, next) => {
     }
 };
 
-export const getUserSubscriptions = async (req, res, next) => {
+export const getUserSubscriptionsById = async (req, res, next) => {
     console.log(
         "[server] req for list of subscriptions of user:",
         req.params.id,
@@ -129,6 +129,78 @@ export const getUpcomingRenewals = async (req, res, next) => {
         res.status(200).json({
             success: true,
             data: upcomingRenewals,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateSubscriptionById = async (req, res, next) => {
+    console.log(
+        `[server] req to update subscription:${req.params.id} from user:${req.user._id}`,
+    );
+    try {
+        const subscription = await SubscriptionModel.findById(req.params.id);
+
+        if (!subscription) {
+            const error = new Error(`subscription ${req.params.id} not found`);
+            error.statusCode = 404;
+            return next(error);
+        }
+
+        if (subscription.user.toString() !== req.user.id) {
+            const error = new Error(
+                `user:${req.user._id} is not authorized to update subscription:${req.params.id}`,
+            );
+            error.statusCode = 401;
+            return next(error);
+        }
+
+        console.log(`[server] updating subscription:${req.params.id}...`);
+        const updatedSubscription = await SubscriptionModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true },
+        );
+
+        console.log("[server] updated subscription successfully");
+        res.status(200).json({
+            success: true,
+            data: updatedSubscription,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteSubscriptionById = async (req, res, next) => {
+    console.log(
+        `[server] req to delete subscription:${req.params.id} from user:${req.user._id}`,
+    );
+    try {
+        const subscription = await SubscriptionModel.findById(req.params.id);
+
+        if (!subscription) {
+            const error = new Error("Subscription not found");
+            error.statusCode = 404;
+            return next(error);
+        }
+
+        if (subscription.user.toString() !== req.user.id) {
+            const error = new Error(
+                "You are not authorized to delete this subscription",
+            );
+            error.statusCode = 401;
+            return next(error);
+        }
+
+        console.log(`[server] deleting subscription:${req.params.id}...`);
+        await SubscriptionModel.findByIdAndDelete(req.params.id);
+
+        console.log("[server] deleted subscription successfully");
+        res.status(200).json({
+            success: true,
+            message: "Subscription deleted successfully",
         });
     } catch (error) {
         next(error);
