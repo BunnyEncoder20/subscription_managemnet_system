@@ -51,7 +51,7 @@ export const createSubscription = async (req, res, next) => {
     }
 };
 
-export const getSpecificSubscription = async (req, res, next) => {
+export const getSubscriptionById = async (req, res, next) => {
     console.log(
         `[server] req for subscription:${req.params.id} from user:${req.user._id}`,
     );
