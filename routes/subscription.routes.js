@@ -17,7 +17,6 @@ const subscriptionRouter = Router();
 // Static routes first
 subscriptionRouter.get("/", verifyAdmin, getAllSubscriptions);
 subscriptionRouter.post("/", authMiddleware, createSubscription);
-
 subscriptionRouter.get(
     "/upcoming-renewals",
     authMiddleware,
@@ -26,11 +25,7 @@ subscriptionRouter.get(
 
 // dynamic routes after
 subscriptionRouter.get("/:id", verifyAdmin, getSubscriptionById);
-
-// TODO: Complete this route's controller
 subscriptionRouter.put("/:id", authMiddleware, updateSubscriptionById);
-
-// TODO: Complete this route's controller
 subscriptionRouter.delete("/:id", authMiddleware, deleteSubscriptionById);
 
 // More dynamic routes
