@@ -118,8 +118,12 @@ export const getUpcomingRenewals = async (req, res, next) => {
         const upcomingRenewals = await SubscriptionModel.find({
             user: req.user._id,
             status: "active",
-            nextRenewalDate: { $gte: Date.now() },
-        });
+            nextRenewalDate: { $gte: new Date() },
+        })
+            .sort({ nextRenewalDate: 1 }) // sort in chronological order
+            .limit(parseInt(req.params.limit || 10)) // limit queries if limit given in params else 10
+            .offset(parseInt(req.params.offset || 0)) // offset queries if offset given in params else 0
+            .select("name plan amount nextRenewalDate"); // select only required fields
 
         console.log("[server] fetched upcoming renewals successfully");
         res.status(200).json({
