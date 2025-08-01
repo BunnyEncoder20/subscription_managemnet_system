@@ -38,3 +38,57 @@ export const getUserById = async (req, res, next) => {
         next(error);
     }
 };
+
+export const updateSpecificUser = async (req, res, next) => {
+    console.log(`[server] req to update user:${req.params.id} data`);
+
+    try {
+        if (req.params.id === req.user._id || req.user.isAdmin) {
+            console.log(`[server] finding user and updating data...`);
+            const updatedUser = await UserModel.findByIdAndUpdate(
+                req.user._id,
+                req.body,
+                {
+                    new: true, // return updated document
+                    runValidators: true, // run validators on updated data
+                },
+            );
+            console.log("[server] done");
+            res.status(200).json({
+                success: true,
+                data: updatedUser,
+            });
+        } else {
+            const error = new Error(
+                `user:${req.user.email} is not authorized to update user:${req.params.id}`,
+            );
+            error.statusCode = 403;
+            throw error;
+        }
+    } catch (error) {
+        console.log(
+            `[server] there was a error updating user:${req.params.id} data`,
+        );
+        next(error);
+    }
+};
+
+export const deleteUserById = async (req, res, next) => {
+    console.log(`[server] req to delete user:${req.params.id}`);
+
+    try {
+        if (req.params.id == req.user._id || req.user.isAdmin) {
+        } else {
+            const error = new Error(
+                `user:${req.user.email} is not authorized to delete user:${req.params.id}`,
+            );
+            error.statusCode = 403;
+            throw error;
+        }
+    } catch (error) {
+        console.log(
+            `[server] there was a error deleting user:${req.params.id}`,
+        );
+        next(error);
+    }
+};
