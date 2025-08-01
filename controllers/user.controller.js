@@ -44,15 +44,24 @@ export const updateSpecificUser = async (req, res, next) => {
 
     try {
         if (req.params.id === req.user._id || req.user.isAdmin) {
-            console.log(`[server] finding user and updating data...`);
+            console.log(
+                `[server] finding user:${req.params.id} and updating data...`,
+            );
             const updatedUser = await UserModel.findByIdAndUpdate(
-                req.user._id,
+                req.params.id,
                 req.body,
                 {
                     new: true, // return updated document
                     runValidators: true, // run validators on updated data
                 },
             );
+
+            if (!updatedUser) {
+                const error = new Error(`user:${req.params.id} not found`);
+                error.statusCode = 404;
+                throw error;
+            }
+
             console.log("[server] done");
             res.status(200).json({
                 success: true,
@@ -78,6 +87,22 @@ export const deleteUserById = async (req, res, next) => {
 
     try {
         if (req.params.id == req.user._id || req.user.isAdmin) {
+            console.log(`[server] finding and deleting user:${req.params.id}`);
+            const deletedUser = await UserModel.findByIdAndDelete(
+                req.params.id,
+            );
+
+            if (!deletedUser) {
+                const error = new Error(`user:${req.params.id} not found`);
+                error.statusCode = 404;
+                throw error;
+            }
+
+            console.log("[server] done");
+            res.status(200).json({
+                success: true,
+                data: deletedUser,
+            });
         } else {
             const error = new Error(
                 `user:${req.user.email} is not authorized to delete user:${req.params.id}`,
