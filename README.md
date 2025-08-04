@@ -5,6 +5,13 @@
 - Authenticate users using JWTs, connect a MongoDB instance and integrate it with ORMs.
 - Structured the architecture of APIs to ensure scalability and seamless communication with the frontend.
 
+## Tech Stack
+1. Node.js
+2. Express.js
+3. MongoDB
+4. Arcjet
+5. Upstash
+
 ## Project Fratures:
 - Advanced Rate Limiting and Bot Protection: with Arcjet that helps you secure the whole app.
 - Database Modeling: Models and relationships using MongoDB & Mongoose.
