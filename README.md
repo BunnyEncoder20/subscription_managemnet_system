@@ -1,4 +1,4 @@
-# subscription_management_system
+# Subscription Management System
 
 ## About the Project
 - Built a subscription management system using `Node.js`, `Express.js,` `MongoDB`, `Arcjet`, and `Upstash` Workflows.
@@ -65,7 +65,6 @@ and many more, including code architecture and reusability.
 ![adminMiddleware](./public/assets/adminMiddleware.png)
 ![5daysReminder](./public/assets/5daysReminder.png)
 ![2dayReminder](./public/assets/2dayReminder.png)
-![1dayReminder](./public/assets/1dayReminder.png)
 ![1dayReminder](./public/assets/1dayReminder.png)
 
 ## Important Commands
