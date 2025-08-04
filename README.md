@@ -1,5 +1,19 @@
 # subscription_management_system
 
+## About the Project
+- Built a subscription management system using `Node.js`, `Express.js,` `MongoDB`, `Arcjet`, and `Upstash` Workflows.
+- Authenticate users using JWTs, connect a MongoDB instance and integrate it with ORMs.
+- Structured the architecture of APIs to ensure scalability and seamless communication with the frontend.
+
+## Project Fratures:
+- Advanced Rate Limiting and Bot Protection: with Arcjet that helps you secure the whole app.
+- Database Modeling: Models and relationships using MongoDB & Mongoose.
+- JWT Authentication: User CRUD operations and subscription management auth via cookies.
+- Global Error Handling: Input validation and middleware integration.
+- Logging Mechanisms: For better debugging and monitoring.
+- Email Reminders: Automating smart email reminders with workflows using Upstash.
+and many more, including code architecture and reusability.
+
 ## Studying
 
 ### Backend Architectures
@@ -29,16 +43,32 @@
 
 
 ## Project Plan:
-1. Setting up a  monolithic backend
-2. Using Node.js and Express.js
+1. Setting up a monolithic backend
+2. Framework Node.js and Express.js
 3. Connecting to MongoDB database
 4. Securing API with Arcjet
 5. Automating Subscription tracking with Upstash Workflows
+
+## ScreenShots
+![SignIn API](./public/assets/signIn.png)
+![User's Subscription API](./public/assets/getUserSubscriptions.png)
+![getAllUsers](./public/assets/getAllUsers.png)
+![createSubscription](./public/assets/createSubscription.png)
+![adminMiddleware](./public/assets/adminMiddleware.png)
+![adminMiddleware](./public/assets/adminMiddleware.png)
+![5daysReminder](./public/assets/5daysReminder.png)
+![2dayReminder](./public/assets/2dayReminder.png)
+![1dayReminder](./public/assets/1dayReminder.png)
+![1dayReminder](./public/assets/1dayReminder.png)
 
 ## Important Commands
 - To generate a express project (for only backend)
 ```bash
 npx express-generator --no-view --git ./
+```
+- To start server
+```bash
+npm run dev
 ```
 - To start upstash serverless workflow (for local dev)
 ```bash
